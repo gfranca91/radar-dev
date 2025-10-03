@@ -37,6 +37,7 @@ export default async function Home() {
             title={post.title}
             image_url={post.image_url}
             tags={post.tags}
+            slug={post.slug}
           />
         ))}
       </div>

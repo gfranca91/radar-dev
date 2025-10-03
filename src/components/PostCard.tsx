@@ -1,12 +1,23 @@
+import Link from "next/link";
+
 interface PostCardProps {
   title: string;
   image_url: string | null;
   tags: string[] | null;
+  slug: string;
 }
 
-export default function PostCard({ title, image_url, tags }: PostCardProps) {
+export default function PostCard({
+  title,
+  image_url,
+  tags,
+  slug,
+}: PostCardProps) {
   return (
-    <div className="border rounded-lg p-4">
+    <Link
+      href={`/post/${slug}`}
+      className="block border rounded-lg p-4 hover:shadow-lg transition-shadow duration-200"
+    >
       {image_url && (
         <img
           src={image_url}
@@ -27,6 +38,6 @@ export default function PostCard({ title, image_url, tags }: PostCardProps) {
       </div>
 
       <h2 className="text-xl font-bold">{title}</h2>
-    </div>
+    </Link>
   );
 }
