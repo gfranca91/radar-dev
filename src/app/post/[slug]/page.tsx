@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import AuthorBio from "../../../components/AuthorBio";
 
 type PageProps = {
   params: {
@@ -18,7 +19,8 @@ async function getPost(slug: string) {
       *,
       authors (
         name,
-        picture_url
+        picture_url,
+        bio
       )
     `
     )
@@ -69,6 +71,8 @@ export default async function PostPage({ params }: PageProps) {
         )}
 
         {post.content && <ReactMarkdown>{post.content}</ReactMarkdown>}
+
+        {post.authors && <AuthorBio author={post.authors} />}
       </div>
     </article>
   );
