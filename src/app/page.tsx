@@ -1,6 +1,7 @@
 import { supabase } from "../lib/supabaseClient";
 import PostCard from "../components/PostCard";
 import FeaturedPostsGrid from "../components/FeaturedPostsGrid";
+import Sidebar from "../components/Sidebar";
 
 type Post = {
   id: number;
@@ -41,32 +42,31 @@ export default async function Home() {
           </h2>
 
           <div className="flex flex-col gap-8">
-            {latestPosts.length > 0 ? (
-              latestPosts.map((post: Post) => (
-                <PostCard
-                  key={post.id}
-                  title={post.title}
-                  image_url={post.image_url}
-                  slug={post.slug}
-                  tags={post.tags}
-                />
-              ))
-            ) : (
-              <p>Nenhum outro post para mostrar.</p>
-            )}
+            {latestPosts.length > 0
+              ? latestPosts.map((post: Post) => (
+                  <PostCard
+                    key={post.id}
+                    title={post.title}
+                    image_url={post.image_url}
+                    slug={post.slug}
+                    tags={post.tags}
+                  />
+                ))
+              : posts
+                  .slice(0, 3)
+                  .map((post: Post) => (
+                    <PostCard
+                      key={post.id}
+                      title={post.title}
+                      image_url={post.image_url}
+                      slug={post.slug}
+                      tags={post.tags}
+                    />
+                  ))}
           </div>
         </div>
 
-        <aside className="w-full md:w-1/3">
-          <h2 className="text-2xl font-bold border-b-2 border-gray-800 pb-2 mb-6">
-            Em Alta
-          </h2>
-          <div className="bg-gray-100 p-4 rounded-lg">
-            <p>
-              A sidebar ficará aqui. Em breve, adicionaremos conteúdo dinâmico.
-            </p>
-          </div>
-        </aside>
+        <Sidebar posts={posts} />
       </div>
     </>
   );
