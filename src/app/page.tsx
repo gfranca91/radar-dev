@@ -27,24 +27,33 @@ export default async function Home() {
 
   return (
     <>
-      <FeaturedPostsGrid mainPost={mainPost} secondaryPosts={secondaryPosts} />
+      {posts.length >= 3 && (
+        <FeaturedPostsGrid
+          mainPost={mainPost}
+          secondaryPosts={secondaryPosts}
+        />
+      )}
 
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col md:flex-row gap-8 mt-8">
         <div className="w-full md:w-2/3">
           <h2 className="text-2xl font-bold border-b-2 border-gray-800 pb-2 mb-6">
             Últimos Posts
           </h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {latestPosts.map((post: Post) => (
-              <PostCard
-                key={post.id}
-                title={post.title}
-                image_url={post.image_url}
-                slug={post.slug}
-                tags={post.tags}
-              />
-            ))}
+          <div className="flex flex-col gap-8">
+            {latestPosts.length > 0 ? (
+              latestPosts.map((post: Post) => (
+                <PostCard
+                  key={post.id}
+                  title={post.title}
+                  image_url={post.image_url}
+                  slug={post.slug}
+                  tags={post.tags}
+                />
+              ))
+            ) : (
+              <p>Nenhum outro post para mostrar.</p>
+            )}
           </div>
         </div>
 
