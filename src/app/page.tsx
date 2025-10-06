@@ -1,7 +1,7 @@
 import { supabase } from "../lib/supabaseClient";
-import PostCard from "../components/PostCard";
 import FeaturedPostsGrid from "../components/FeaturedPostsGrid";
 import Sidebar from "../components/Sidebar";
+import PostListItem from "../components/PostListItem";
 
 type Post = {
   id: number;
@@ -44,24 +44,12 @@ export default async function Home() {
           <div className="flex flex-col gap-8">
             {latestPosts.length > 0
               ? latestPosts.map((post: Post) => (
-                  <PostCard
-                    key={post.id}
-                    title={post.title}
-                    image_url={post.image_url}
-                    slug={post.slug}
-                    tags={post.tags}
-                  />
+                  <PostListItem key={post.id} {...post} />
                 ))
               : posts
                   .slice(0, 3)
                   .map((post: Post) => (
-                    <PostCard
-                      key={post.id}
-                      title={post.title}
-                      image_url={post.image_url}
-                      slug={post.slug}
-                      tags={post.tags}
-                    />
+                    <PostListItem key={post.id} {...post} />
                   ))}
           </div>
         </div>
