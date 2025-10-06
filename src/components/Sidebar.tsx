@@ -1,9 +1,10 @@
-import Link from "next/link";
+import SidebarPostItem from "./SidebarPostItem";
 
 type Post = {
   id: number;
   slug: string;
   title: string;
+  image_url: string | null;
 };
 
 type SidebarProps = {
@@ -11,22 +12,16 @@ type SidebarProps = {
 };
 
 export default function Sidebar({ posts }: SidebarProps) {
-  const recentPosts = posts.slice(0, 5);
+  const recentPosts = posts.slice(0, 4);
 
   return (
     <aside className="w-full md:w-1/3">
       <h2 className="text-2xl font-bold border-b-2 border-gray-800 pb-2 mb-6">
         Mais Recentes
       </h2>
-      <div className="flex flex-col space-y-4">
+      <div className="flex flex-col space-y-6">
         {recentPosts.map((post) => (
-          <Link
-            key={post.id}
-            href={`/post/${post.slug}`}
-            className="border-b border-gray-200 pb-2 hover:text-blue-600 transition-colors"
-          >
-            {post.title}
-          </Link>
+          <SidebarPostItem key={post.id} {...post} />
         ))}
       </div>
     </aside>
