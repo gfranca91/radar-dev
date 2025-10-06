@@ -29,20 +29,35 @@ export default async function Home() {
     <>
       <FeaturedPostsGrid mainPost={mainPost} secondaryPosts={secondaryPosts} />
 
-      <h2 className="text-2xl font-bold border-b-2 border-gray-800 pb-2 mb-6">
-        Últimos Posts
-      </h2>
+      <div className="flex flex-col md:flex-row gap-8">
+        <div className="w-full md:w-2/3">
+          <h2 className="text-2xl font-bold border-b-2 border-gray-800 pb-2 mb-6">
+            Últimos Posts
+          </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {latestPosts.map((post: Post) => (
-          <PostCard
-            key={post.id}
-            title={post.title}
-            image_url={post.image_url}
-            slug={post.slug}
-            tags={post.tags}
-          />
-        ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {latestPosts.map((post: Post) => (
+              <PostCard
+                key={post.id}
+                title={post.title}
+                image_url={post.image_url}
+                slug={post.slug}
+                tags={post.tags}
+              />
+            ))}
+          </div>
+        </div>
+
+        <aside className="w-full md:w-1/3">
+          <h2 className="text-2xl font-bold border-b-2 border-gray-800 pb-2 mb-6">
+            Em Alta
+          </h2>
+          <div className="bg-gray-100 p-4 rounded-lg">
+            <p>
+              A sidebar ficará aqui. Em breve, adicionaremos conteúdo dinâmico.
+            </p>
+          </div>
+        </aside>
       </div>
     </>
   );
