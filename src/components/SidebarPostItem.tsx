@@ -1,19 +1,16 @@
 import Link from "next/link";
+import Image from "next/image";
+import type { Post } from "../types";
 
-type Post = {
-  id: number;
-  slug: string;
-  title: string;
-  image_url: string | null;
-};
-
-export default function SidebarPostItem({ id, slug, title, image_url }: Post) {
+export default function SidebarPostItem({ slug, title, image_url }: Post) {
   return (
     <Link href={`/post/${slug}`} className="flex items-center gap-3 group">
       <div className="flex-shrink-0">
-        <img
+        <Image
           src={image_url || "https://placehold.co/150"}
           alt={title}
+          width={80}
+          height={80}
           className="rounded-md object-cover w-20 h-20"
         />
       </div>

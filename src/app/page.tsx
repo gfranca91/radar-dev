@@ -12,7 +12,7 @@ type Post = {
 };
 
 export default async function Home() {
-  const { data: posts, error } = await supabase
+  const { data: posts } = await supabase
     .from("posts")
     .select("*")
     .eq("status", "published")

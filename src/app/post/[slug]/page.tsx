@@ -4,6 +4,8 @@ import ReactMarkdown from "react-markdown";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import AuthorBio from "../../../components/AuthorBio";
+import Image from "next/image";
+import type { Post } from "../../../types";
 
 type PageProps = {
   params: {
@@ -11,14 +13,14 @@ type PageProps = {
   };
 };
 
-async function getPost(slug: string) {
-  const { data, error } = await supabase
+async function getPost(slug: string): Promise<Post> {
+  const { data } = await supabase
     .from("posts")
     .select(`*, authors (name, picture_url, bio)`)
     .eq("slug", slug)
     .single();
 
-  if (error || !data) {
+  if (!data) {
     notFound();
   }
 
@@ -26,7 +28,7 @@ async function getPost(slug: string) {
 }
 
 export default async function PostPage({ params }: PageProps) {
-  const post: any = await getPost(params.slug);
+  const post = await getPost(params.slug);
 
   return (
     <article className="max-w-4xl mx-auto px-4 py-8">
@@ -47,10 +49,12 @@ export default async function PostPage({ params }: PageProps) {
       )}
 
       {post.image_url && (
-        <img
+        <Image
           src={post.image_url}
           alt={post.title}
-          className="w-full rounded-lg mb-8"
+          width={1200}
+          height={600}
+          className="w-full h-auto rounded-lg mb-8"
         />
       )}
 

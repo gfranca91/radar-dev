@@ -2,9 +2,9 @@ import { NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { supabaseAdmin } from "../../../lib/supabaseAdmin";
 
-export async function GET() {
-  const maxDuration = 30;
+export const maxDuration = 30;
 
+export async function GET() {
   try {
     const geminiKey = process.env.GEMINI_API_KEY;
     const newsApiKey = process.env.NEWS_API_KEY;
@@ -14,7 +14,6 @@ export async function GET() {
     }
 
     const useMockData = process.env.NODE_ENV === "development";
-
     let articleToProcess;
 
     if (useMockData) {
@@ -99,10 +98,16 @@ export async function GET() {
       message: "Novo rascunho de post criado com sucesso!",
       post: data,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("ERRO NA API ROUTE:", error);
+
+    let errorMessage = "Ocorreu um erro desconhecido.";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+
     return NextResponse.json(
-      { error: `Ocorreu um erro: ${error.message}` },
+      { error: `Ocorreu um erro: ${errorMessage}` },
       { status: 500 }
     );
   }

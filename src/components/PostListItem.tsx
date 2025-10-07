@@ -1,27 +1,17 @@
 import Link from "next/link";
+import Image from "next/image";
+import type { Post } from "../types";
 
-type Post = {
-  id: number;
-  slug: string;
-  title: string;
-  image_url: string | null;
-  tags: string[] | null;
-};
-
-export default function PostListItem({
-  id,
-  slug,
-  title,
-  image_url,
-  tags,
-}: Post) {
+export default function PostListItem({ slug, title, image_url, tags }: Post) {
   return (
     <div className="flex gap-4">
       <div className="w-1/3">
         <Link href={`/post/${slug}`}>
-          <img
+          <Image
             src={image_url || "https://placehold.co/400x300"}
             alt={title}
+            width={400}
+            height={300}
             className="rounded-lg object-cover aspect-video"
           />
         </Link>
