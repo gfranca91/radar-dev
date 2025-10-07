@@ -1,11 +1,5 @@
 import SidebarPostItem from "./SidebarPostItem";
-
-type Post = {
-  id: number;
-  slug: string;
-  title: string;
-  image_url: string | null;
-};
+import type { Post } from "../types";
 
 type SidebarProps = {
   posts: Post[];
