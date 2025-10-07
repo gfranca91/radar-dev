@@ -1,11 +1,5 @@
 import FeaturedPostCard from "./FeaturedPostCard";
-
-type Post = {
-  id: number;
-  slug: string;
-  title: string;
-  image_url: string | null;
-};
+import type { Post } from "../types";
 
 type FeaturedPostsGridProps = {
   mainPost: Post;

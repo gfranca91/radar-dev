@@ -2,7 +2,6 @@ import { supabase } from "../lib/supabaseClient";
 import FeaturedPostsGrid from "../components/FeaturedPostsGrid";
 import Sidebar from "../components/Sidebar";
 import PostListItem from "../components/PostListItem";
-import type { Post } from "../types";
 
 export default async function Home() {
   const { data: posts } = await supabase
