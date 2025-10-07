@@ -2,16 +2,16 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Post } from "../types";
 
-export default function PostCard({ title, image_url, tags, slug }: Post) {
+export default function PostCard(post: Post) {
   return (
     <Link
-      href={`/post/${slug}`}
+      href={`/post/${post.slug}`}
       className="block border rounded-lg p-4 hover:shadow-lg transition-shadow duration-200"
     >
-      {image_url && (
+      {post.image_url && (
         <Image
-          src={image_url}
-          alt={title}
+          src={post.image_url}
+          alt={post.title}
           width={500}
           height={300}
           className="w-full h-48 object-cover rounded-lg mb-4"
@@ -19,7 +19,7 @@ export default function PostCard({ title, image_url, tags, slug }: Post) {
       )}
 
       <div className="flex flex-wrap gap-2 mb-2">
-        {tags?.map((tag) => (
+        {post.tags?.map((tag) => (
           <Link
             key={tag}
             href={`/tags/${tag}`}
@@ -30,7 +30,7 @@ export default function PostCard({ title, image_url, tags, slug }: Post) {
         ))}
       </div>
 
-      <h2 className="text-xl font-bold">{title}</h2>
+      <h2 className="text-xl font-bold">{post.title}</h2>
     </Link>
   );
 }

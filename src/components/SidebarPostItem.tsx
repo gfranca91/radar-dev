@@ -12,6 +12,7 @@ export default function SidebarPostItem({ slug, title, image_url }: Post) {
           width={80}
           height={80}
           className="rounded-md object-cover w-20 h-20"
+          unoptimized
         />
       </div>
 

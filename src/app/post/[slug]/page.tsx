@@ -55,6 +55,7 @@ export default async function PostPage({ params }: PageProps) {
           width={1200}
           height={600}
           className="w-full h-auto rounded-lg mb-8"
+          unoptimized
         />
       )}
 
@@ -62,7 +63,7 @@ export default async function PostPage({ params }: PageProps) {
         {post.content && <ReactMarkdown>{post.content}</ReactMarkdown>}
       </div>
 
-      {post.authors && <AuthorBio author={post.authors} />}
+      {post.authors && post.authors.bio && <AuthorBio author={post.authors} />}
     </article>
   );
 }

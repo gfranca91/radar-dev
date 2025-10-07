@@ -12,6 +12,7 @@ export default function AuthorBio({ author }: { author: Author }) {
         width={80}
         height={80}
         className="w-20 h-20 rounded-full object-cover"
+        unoptimized
       />
       <div>
         <h3 className="text-xl font-bold">{author.name}</h3>

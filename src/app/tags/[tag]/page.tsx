@@ -1,5 +1,6 @@
 import { supabase } from "../../../lib/supabaseClient";
-import PostCard from "../../../components/PostCard"; // Reutilizando nosso PostCard!
+import PostCard from "../../../components/PostCard";
+import type { Post } from "../../../types";
 
 type PageProps = {
   params: {
@@ -7,15 +8,7 @@ type PageProps = {
   };
 };
 
-type Post = {
-  id: number;
-  title: string;
-  image_url: string | null;
-  slug: string;
-  tags: string[] | null;
-};
-
-async function getPostsByTag(tag: string) {
+async function getPostsByTag(tag: string): Promise<Post[]> {
   const decodedTag = decodeURIComponent(tag);
 
   const { data, error } = await supabase
@@ -44,7 +37,7 @@ export default async function TagPage({ params }: PageProps) {
 
       {posts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {posts.map((post: Post) => (
+          {posts.map((post) => (
             <PostCard key={post.id} {...post} />
           ))}
         </div>

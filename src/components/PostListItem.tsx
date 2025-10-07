@@ -25,6 +25,7 @@ export default function PostListItem({
             width={400}
             height={300}
             className="rounded-lg object-cover aspect-video"
+            unoptimized
           />
         </Link>
       </div>
