@@ -2,14 +2,7 @@ import { supabase } from "../lib/supabaseClient";
 import FeaturedPostsGrid from "../components/FeaturedPostsGrid";
 import Sidebar from "../components/Sidebar";
 import PostListItem from "../components/PostListItem";
-
-type Post = {
-  id: number;
-  title: string;
-  image_url: string | null;
-  slug: string;
-  tags: string[] | null;
-};
+import type { Post } from "../types";
 
 export default async function Home() {
   const { data: posts } = await supabase
@@ -43,14 +36,12 @@ export default async function Home() {
 
           <div className="flex flex-col gap-8">
             {latestPosts.length > 0
-              ? latestPosts.map((post: Post) => (
+              ? latestPosts.map((post) => (
                   <PostListItem key={post.id} {...post} />
                 ))
               : posts
                   .slice(0, 3)
-                  .map((post: Post) => (
-                    <PostListItem key={post.id} {...post} />
-                  ))}
+                  .map((post) => <PostListItem key={post.id} {...post} />)}
           </div>
         </div>
 

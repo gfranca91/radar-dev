@@ -1,8 +1,20 @@
 import Link from "next/link";
 import Image from "next/image";
-import type { Post } from "../types";
 
-export default function PostListItem({ slug, title, image_url, tags }: Post) {
+interface PostListItemProps {
+  id: number;
+  slug: string;
+  title: string;
+  image_url: string | null;
+  tags: string[] | null;
+}
+
+export default function PostListItem({
+  slug,
+  title,
+  image_url,
+  tags,
+}: PostListItemProps) {
   return (
     <div className="flex gap-4">
       <div className="w-1/3">
