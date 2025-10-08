@@ -16,13 +16,11 @@ export async function GET() {
     const newsResponse = await fetch(
       `https://newsapi.org/v2/top-headlines?country=br&category=technology&pageSize=5&apiKey=${newsApiKey}`
     );
-    if (!newsResponse.ok) {
-      throw new Error("Falha ao buscar notícias da NewsAPI.");
-    }
+    if (!newsResponse.ok) throw new Error("Falha ao buscar notícias.");
     const newsData = await newsResponse.json();
     if (newsData.articles.length === 0) {
       return NextResponse.json({
-        message: "Nenhuma notícia nova encontrada para processar.",
+        message: "Nenhuma notícia nova encontrada.",
       });
     }
     const articleToProcess =
@@ -64,7 +62,7 @@ export async function GET() {
       .trim();
     const generatedPost = JSON.parse(cleanedResponse);
 
-    const { data, error: supabaseError } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from("posts")
       .insert([
         {
@@ -78,19 +76,24 @@ export async function GET() {
       ])
       .select();
 
-    if (supabaseError) {
-      throw new Error(`Erro ao salvar no Supabase: ${supabaseError.message}`);
+    if (error) {
+      throw new Error(`Erro ao salvar no Supabase: ${error.message}`);
     }
 
     return NextResponse.json({
-      message:
-        "Novo rascunho de post criado com sucesso a partir de notícias reais!",
+      message: "Novo rascunho de post criado com sucesso!",
       post: data,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("ERRO NA API ROUTE:", error);
+
+    let errorMessage = "Ocorreu um erro desconhecido.";
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+
     return NextResponse.json(
-      { error: `Ocorreu um erro: ${error.message}` },
+      { error: `Ocorreu um erro: ${errorMessage}` },
       { status: 500 }
     );
   }
