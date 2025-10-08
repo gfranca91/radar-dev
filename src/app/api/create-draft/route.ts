@@ -4,6 +4,13 @@ import { supabaseAdmin } from "../../../lib/supabaseAdmin";
 
 export const maxDuration = 30;
 
+interface GeneratedPost {
+  title: string;
+  content: string;
+  slug: string;
+  tags: string[];
+}
+
 export async function GET() {
   try {
     const geminiKey = process.env.GEMINI_API_KEY;
@@ -60,7 +67,8 @@ export async function GET() {
       .replace(/```json/g, "")
       .replace(/```/g, "")
       .trim();
-    const generatedPost = JSON.parse(cleanedResponse);
+
+    const generatedPost = JSON.parse(cleanedResponse) as GeneratedPost;
 
     const { data, error } = await supabaseAdmin
       .from("posts")
