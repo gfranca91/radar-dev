@@ -13,32 +13,20 @@ export async function GET() {
       throw new Error("Chaves de API não configuradas.");
     }
 
-    const useMockData = process.env.NODE_ENV === "development";
-    let articleToProcess;
-
-    if (useMockData) {
-      articleToProcess = {
-        title:
-          "Google anuncia 'Project IDX', um novo ambiente de desenvolvimento baseado em nuvem com IA",
-        source: { name: "The Verge" },
-        url: "https://www.theverge.com/2025/10/06/project-idx-google-cloud-development",
-        description:
-          "O Project IDX é uma nova iniciativa do Google para criar um ambiente de desenvolvimento completo no navegador, com integração de IA generativa.",
-      };
-    } else {
-      const newsResponse = await fetch(
-        `https://newsapi.org/v2/top-headlines?country=br&category=technology&pageSize=5&apiKey=${newsApiKey}`
-      );
-      if (!newsResponse.ok) throw new Error("Falha ao buscar notícias.");
-      const newsData = await newsResponse.json();
-      if (newsData.articles.length === 0) {
-        return NextResponse.json({
-          message: "Nenhuma notícia nova encontrada.",
-        });
-      }
-      articleToProcess =
-        newsData.articles[Math.floor(Math.random() * newsData.articles.length)];
+    const newsResponse = await fetch(
+      `https://newsapi.org/v2/top-headlines?country=br&category=technology&pageSize=5&apiKey=${newsApiKey}`
+    );
+    if (!newsResponse.ok) {
+      throw new Error("Falha ao buscar notícias da NewsAPI.");
     }
+    const newsData = await newsResponse.json();
+    if (newsData.articles.length === 0) {
+      return NextResponse.json({
+        message: "Nenhuma notícia nova encontrada para processar.",
+      });
+    }
+    const articleToProcess =
+      newsData.articles[Math.floor(Math.random() * newsData.articles.length)];
 
     const genAI = new GoogleGenerativeAI(geminiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
@@ -76,7 +64,7 @@ export async function GET() {
       .trim();
     const generatedPost = JSON.parse(cleanedResponse);
 
-    const { data, error } = await supabaseAdmin
+    const { data, error: supabaseError } = await supabaseAdmin
       .from("posts")
       .insert([
         {
@@ -90,24 +78,19 @@ export async function GET() {
       ])
       .select();
 
-    if (error) {
-      throw new Error(`Erro ao salvar no Supabase: ${error.message}`);
+    if (supabaseError) {
+      throw new Error(`Erro ao salvar no Supabase: ${supabaseError.message}`);
     }
 
     return NextResponse.json({
-      message: "Novo rascunho de post criado com sucesso!",
+      message:
+        "Novo rascunho de post criado com sucesso a partir de notícias reais!",
       post: data,
     });
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error("ERRO NA API ROUTE:", error);
-
-    let errorMessage = "Ocorreu um erro desconhecido.";
-    if (error instanceof Error) {
-      errorMessage = error.message;
-    }
-
     return NextResponse.json(
-      { error: `Ocorreu um erro: ${errorMessage}` },
+      { error: `Ocorreu um erro: ${error.message}` },
       { status: 500 }
     );
   }
