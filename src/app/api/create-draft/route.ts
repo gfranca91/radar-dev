@@ -85,11 +85,13 @@ export async function GET() {
       post: data,
     });
   } catch (error: unknown) {
-    console.error("ERRO NA API ROUTE:", error);
-
     let errorMessage = "Ocorreu um erro desconhecido.";
+
     if (error instanceof Error) {
+      console.error("ERRO NA API ROUTE:", error);
       errorMessage = error.message;
+    } else {
+      console.error("ERRO NA API ROUTE:", String(error));
     }
 
     return NextResponse.json(
