@@ -12,6 +12,15 @@ interface GeneratedPost {
   image_url: string;
 }
 
+interface NewsArticle {
+  title: string;
+  description: string;
+  urlToImage: string;
+  source: {
+    name: string;
+  };
+}
+
 export async function GET() {
   try {
     const geminiKey = process.env.GEMINI_API_KEY;
@@ -27,8 +36,8 @@ export async function GET() {
     if (!newsResponse.ok) throw new Error("Falha ao buscar notícias.");
     const newsData = await newsResponse.json();
 
-    const articlesWithImages = newsData.articles.filter(
-      (article: any) => article.urlToImage
+    const articlesWithImages = (newsData.articles as NewsArticle[]).filter(
+      (article) => article.urlToImage
     );
 
     if (articlesWithImages.length === 0) {
@@ -36,6 +45,7 @@ export async function GET() {
         message: "Nenhuma notícia com imagem encontrada para processar.",
       });
     }
+
     const articleToProcess =
       articlesWithImages[Math.floor(Math.random() * articlesWithImages.length)];
 
@@ -79,6 +89,7 @@ export async function GET() {
         "Nenhum objeto JSON válido encontrado na resposta do Gemini."
       );
     }
+
     const jsonString = responseText.substring(jsonStartIndex, jsonEndIndex + 1);
     const generatedPost = JSON.parse(jsonString) as GeneratedPost;
 
