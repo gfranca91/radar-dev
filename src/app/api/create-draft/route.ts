@@ -31,8 +31,9 @@ export async function GET() {
     }
 
     const newsResponse = await fetch(
-      `https://newsapi.org/v2/top-headlines?country=br&category=technology&pageSize=10&apiKey=${newsApiKey}`
+      `https://newsapi.org/v2/everything?q=tecnologia&language=pt&sortBy=publishedAt&pageSize=10&apiKey=${newsApiKey}`
     );
+
     if (!newsResponse.ok) throw new Error("Falha ao buscar notícias.");
     const newsData = await newsResponse.json();
 
