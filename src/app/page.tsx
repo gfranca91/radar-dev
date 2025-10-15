@@ -14,16 +14,15 @@ export default async function Home() {
     return <p>Nenhum post publicado ainda.</p>;
   }
 
-  const mainPost = posts[0];
-  const secondaryPosts = posts.slice(1, 3);
-  const latestPosts = posts.slice(3);
+  const featuredPosts = posts.slice(0, 3);
+  const remainingPosts = posts.slice(3);
 
   return (
     <>
-      {posts.length >= 3 && (
+      {featuredPosts.length === 3 && (
         <FeaturedPostsGrid
-          mainPost={mainPost}
-          secondaryPosts={secondaryPosts}
+          mainPost={featuredPosts[0]}
+          secondaryPosts={featuredPosts.slice(1)}
         />
       )}
 
@@ -34,13 +33,9 @@ export default async function Home() {
           </h2>
 
           <div className="flex flex-col gap-8">
-            {latestPosts.length > 0
-              ? latestPosts.map((post) => (
-                  <PostListItem key={post.id} {...post} />
-                ))
-              : posts
-                  .slice(0, 3)
-                  .map((post) => <PostListItem key={post.id} {...post} />)}
+            {remainingPosts.map((post) => (
+              <PostListItem key={post.id} {...post} />
+            ))}
           </div>
         </div>
 
