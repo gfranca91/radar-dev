@@ -16,6 +16,10 @@ export default function PreviewPostPage() {
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
+  const [imageUrlInput, setImageUrlInput] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
   const router = useRouter();
   const params = useParams();
   const slug = typeof params.slug === "string" ? params.slug : "";
@@ -69,6 +73,65 @@ export default function PreviewPostPage() {
         router.push("/admin/drafts");
       }, 2000);
     }
+  };
+
+  const handleImageUrlSubmit = async () => {
+    if (!post || !imageUrlInput) return;
+    setUploading(true);
+
+    const { error } = await supabase
+      .from("posts")
+      .update({ image_url: imageUrlInput })
+      .eq("id", post.id);
+
+    if (error) {
+      setMessage(`Erro ao atualizar imagem: ${error.message}`);
+    } else {
+      setMessage("Imagem atualizada com sucesso!");
+      setPost({ ...post, image_url: imageUrlInput });
+    }
+
+    setUploading(false);
+  };
+
+  const handleFileUpload = async () => {
+    if (!post || !file) return;
+    setUploading(true);
+
+    const fileExt = file.name.split(".").pop();
+    const fileName = `${post.slug}-${Date.now()}.${fileExt}`;
+    const filePath = `posts/${fileName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from("post-images")
+      .upload(filePath, file, {
+        cacheControl: "3600",
+        upsert: true,
+      });
+
+    if (uploadError) {
+      setMessage(`Erro ao fazer upload: ${uploadError.message}`);
+      setUploading(false);
+      return;
+    }
+
+    const {
+      data: { publicUrl },
+    } = supabase.storage.from("post-images").getPublicUrl(filePath);
+
+    const { error: updateError } = await supabase
+      .from("posts")
+      .update({ image_url: publicUrl })
+      .eq("id", post.id);
+
+    if (updateError) {
+      setMessage(`Erro ao atualizar imagem: ${updateError.message}`);
+    } else {
+      setMessage("Imagem atualizada com sucesso!");
+      setPost({ ...post, image_url: publicUrl });
+    }
+
+    setUploading(false);
   };
 
   if (loading) {
@@ -133,6 +196,47 @@ export default function PreviewPostPage() {
             unoptimized
           />
         )}
+
+        <div className="mb-8 space-y-4">
+          <h2 className="text-xl font-bold">Atualizar imagem do post</h2>
+
+          <div>
+            <label className="block font-semibold">URL externa:</label>
+            <input
+              type="text"
+              value={imageUrlInput}
+              onChange={(e) => setImageUrlInput(e.target.value)}
+              className="border p-2 w-full"
+              placeholder="https://exemplo.com/imagem.jpg"
+            />
+            <button
+              onClick={handleImageUrlSubmit}
+              className="mt-2 bg-blue-600 text-white px-4 py-2 rounded"
+              disabled={uploading}
+            >
+              Usar esta URL
+            </button>
+          </div>
+
+          <div>
+            <label className="block font-semibold mt-4">
+              Ou envie uma imagem:
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setFile(e.target.files?.[0] || null)}
+            />
+            <button
+              onClick={handleFileUpload}
+              className="mt-2 bg-green-600 text-white px-4 py-2 rounded"
+              disabled={uploading}
+            >
+              Fazer upload
+            </button>
+          </div>
+        </div>
+
         <div className="prose prose-lg max-w-none">
           {post.content && <ReactMarkdown>{post.content}</ReactMarkdown>}
         </div>

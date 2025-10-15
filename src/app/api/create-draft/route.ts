@@ -97,6 +97,17 @@ export async function GET() {
       throw new Error("Falha ao fazer parse do JSON gerado pelo Gemini.");
     }
 
+    const { data: authors, error: authorsError } = await supabaseAdmin
+      .from("authors")
+      .select("id");
+
+    if (authorsError || !authors || authors.length === 0) {
+      throw new Error("Não foi possível buscar autores.");
+    }
+
+    const randomAuthorId =
+      authors[Math.floor(Math.random() * authors.length)].id;
+
     const { data, error } = await supabaseAdmin
       .from("posts")
       .insert([
@@ -107,7 +118,7 @@ export async function GET() {
           tags: generatedPost.tags,
           image_url: generatedPost.image_url,
           status: "draft",
-          author_id: 1,
+          author_id: randomAuthorId,
         },
       ])
       .select();
