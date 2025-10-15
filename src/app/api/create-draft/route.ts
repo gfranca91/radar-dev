@@ -15,7 +15,7 @@ interface GeneratedPost {
 interface NewsArticle {
   title: string;
   description: string;
-  urlToImage: string;
+  urlToImage?: string;
   source: {
     name: string;
   };
@@ -36,18 +36,18 @@ export async function GET() {
     if (!newsResponse.ok) throw new Error("Falha ao buscar notícias.");
     const newsData = await newsResponse.json();
 
-    const articlesWithImages = (newsData.articles as NewsArticle[]).filter(
-      (article) => article.urlToImage
-    );
+    const articles = newsData.articles as NewsArticle[];
 
-    if (articlesWithImages.length === 0) {
+    if (articles.length === 0) {
       return NextResponse.json({
-        message: "Nenhuma notícia com imagem encontrada para processar.",
+        message: "Nenhuma notícia encontrada para processar.",
       });
     }
 
     const articleToProcess =
-      articlesWithImages[Math.floor(Math.random() * articlesWithImages.length)];
+      articles[Math.floor(Math.random() * articles.length)];
+
+    const imageUrl = articleToProcess.urlToImage || "";
 
     const genAI = new GoogleGenerativeAI(geminiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
@@ -60,14 +60,14 @@ export async function GET() {
       - Título: ${articleToProcess.title}
       - Descrição: ${articleToProcess.description}
       - Fonte: ${articleToProcess.source.name}
-      - URL da Imagem: ${articleToProcess.urlToImage}
+      - URL da Imagem: ${imageUrl || "sem imagem disponível"}
       
       Regras:
       1. Crie um título novo e chamativo.
       2. Escreva um artigo de 4-5 parágrafos em português.
       3. Crie um slug para a URL (ex: 'nova-versao-do-react').
       4. Sugira um array com 4 tags relevantes.
-      5. Inclua a URL da imagem da notícia no campo 'image_url'.
+      5. Inclua a URL da imagem da notícia no campo 'image_url' (pode ser vazio).
       
       Sua resposta deve ser APENAS um objeto JSON válido, sem nenhum texto antes ou depois. Use a seguinte estrutura:
       {
@@ -75,7 +75,7 @@ export async function GET() {
         "content": "...",
         "slug": "...",
         "tags": ["...", "..."],
-        "image_url": "${articleToProcess.urlToImage}"
+        "image_url": "${imageUrl}"
       }
     `;
 
@@ -116,7 +116,7 @@ export async function GET() {
     }
 
     return NextResponse.json({
-      message: "Novo rascunho de post (com imagem) criado com sucesso!",
+      message: "Novo rascunho de post criado com sucesso!",
       post: data,
     });
   } catch (error: unknown) {
