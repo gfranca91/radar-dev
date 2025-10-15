@@ -82,16 +82,19 @@ export async function GET() {
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
 
-    const jsonStartIndex = responseText.indexOf("{");
-    const jsonEndIndex = responseText.lastIndexOf("}");
-    if (jsonStartIndex === -1 || jsonEndIndex === -1) {
+    const match = responseText.match(/\{[\s\S]*?\}/);
+    if (!match) {
       throw new Error(
         "Nenhum objeto JSON válido encontrado na resposta do Gemini."
       );
     }
 
-    const jsonString = responseText.substring(jsonStartIndex, jsonEndIndex + 1);
-    const generatedPost = JSON.parse(jsonString) as GeneratedPost;
+    let generatedPost: GeneratedPost;
+    try {
+      generatedPost = JSON.parse(match[0]);
+    } catch (err) {
+      throw new Error("Falha ao fazer parse do JSON gerado pelo Gemini.");
+    }
 
     const { data, error } = await supabaseAdmin
       .from("posts")
