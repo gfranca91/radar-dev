@@ -2,6 +2,7 @@ import { supabase } from "../lib/supabaseClient";
 import FeaturedPostsGrid from "../components/FeaturedPostsGrid";
 import Sidebar from "../components/Sidebar";
 import PostListItem from "../components/PostListItem";
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   const { data: posts } = await supabase
