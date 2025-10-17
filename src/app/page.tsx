@@ -3,14 +3,20 @@ import FeaturedPostsGrid from "../components/FeaturedPostsGrid";
 import PostListItem from "../components/PostListItem";
 import Link from "next/link";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function Home() {
-  const { data: posts } = await supabase
+  const { data: posts, error } = await supabase
     .from("posts")
     .select("*")
     .eq("status", "published")
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .range(0, 8);
+
+  if (error) {
+    console.error("Erro ao buscar posts:", error.message);
+    return <p>Erro ao carregar os posts.</p>;
+  }
 
   if (!posts || posts.length === 0) {
     return <p>Nenhum post publicado ainda.</p>;
@@ -40,16 +46,14 @@ export default async function Home() {
             ))}
           </div>
 
-          {posts.length > 9 && (
-            <div className="mt-8 text-center">
-              <Link
-                href="/posts/page/1"
-                className="inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-              >
-                Ver mais posts →
-              </Link>
-            </div>
-          )}
+          <div className="mt-8 text-center">
+            <Link
+              href="/posts/page/1"
+              className="inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              Ver mais posts →
+            </Link>
+          </div>
         </div>
       </div>
     </>
