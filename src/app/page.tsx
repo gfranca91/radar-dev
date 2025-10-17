@@ -16,7 +16,7 @@ export default async function Home() {
   }
 
   const featuredPosts = posts.slice(0, 3);
-  const remainingPosts = posts.slice(3);
+  const remainingPosts = posts.slice(3, 9);
 
   return (
     <>
@@ -38,6 +38,16 @@ export default async function Home() {
               <PostListItem key={post.id} {...post} />
             ))}
           </div>
+          {posts.length > 9 && (
+            <div className="mt-8 text-center">
+              <a
+                href="/posts/page/1"
+                className="inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              >
+                Ver mais posts →
+              </a>
+            </div>
+          )}
         </div>
 
         <Sidebar posts={posts} />
