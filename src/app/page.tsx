@@ -2,6 +2,8 @@ import { supabase } from "../lib/supabaseClient";
 import FeaturedPostsGrid from "../components/FeaturedPostsGrid";
 import Sidebar from "../components/Sidebar";
 import PostListItem from "../components/PostListItem";
+import Link from "next/link";
+
 export const dynamic = "force-dynamic";
 
 export default async function Home() {
@@ -38,14 +40,15 @@ export default async function Home() {
               <PostListItem key={post.id} {...post} />
             ))}
           </div>
+
           {posts.length > 9 && (
             <div className="mt-8 text-center">
-              <a
+              <Link
                 href="/posts/page/1"
                 className="inline-block px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
               >
                 Ver mais posts →
-              </a>
+              </Link>
             </div>
           )}
         </div>
