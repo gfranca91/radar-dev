@@ -6,10 +6,6 @@
     },
     {
       "path": "/api/create-draft",
-      "schedule": "0 15 * * 1-5"
-    },
-    {
-      "path": "/api/create-draft",
       "schedule": "0 21 * * 1-5"
     }
   ]
