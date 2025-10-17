@@ -21,6 +21,13 @@ export default async function PostsPage({ params }: Props) {
     .order("created_at", { ascending: false })
     .range(from, to);
 
+  const { count } = await supabase
+    .from("posts")
+    .select("id", { count: "exact", head: true })
+    .eq("status", "published");
+
+  const totalPages = count ? Math.ceil(count / postsPerPage) : 1;
+
   if (error || !posts || posts.length === 0) {
     return (
       <div className="max-w-3xl mx-auto py-12 px-4">
@@ -40,26 +47,25 @@ export default async function PostsPage({ params }: Props) {
         ))}
       </div>
 
-      <div className="flex justify-between items-center mt-12">
-        {currentPage > 1 ? (
-          <Link
-            href={`/posts/page/${currentPage - 1}`}
-            className="text-blue-600 hover:underline"
-          >
-            ← Página anterior
-          </Link>
-        ) : (
-          <div />
-        )}
+      <div className="flex flex-wrap justify-center gap-2 mt-12">
+        {Array.from({ length: totalPages }, (_, i) => {
+          const page = i + 1;
+          const isActive = page === currentPage;
 
-        {posts.length === postsPerPage && (
-          <Link
-            href={`/posts/page/${currentPage + 1}`}
-            className="text-blue-600 hover:underline"
-          >
-            Próxima página →
-          </Link>
-        )}
+          return (
+            <Link
+              key={page}
+              href={`/posts/page/${page}`}
+              className={`px-4 py-2 rounded border ${
+                isActive
+                  ? "bg-blue-600 text-white border-blue-600"
+                  : "bg-white text-blue-600 border-blue-300 hover:bg-blue-50"
+              }`}
+            >
+              {page}
+            </Link>
+          );
+        })}
       </div>
     </div>
   );

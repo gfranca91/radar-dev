@@ -1,6 +1,5 @@
 import { supabase } from "../lib/supabaseClient";
 import FeaturedPostsGrid from "../components/FeaturedPostsGrid";
-import Sidebar from "../components/Sidebar";
 import PostListItem from "../components/PostListItem";
 import Link from "next/link";
 
@@ -30,7 +29,7 @@ export default async function Home() {
       )}
 
       <div className="flex flex-col md:flex-row gap-8 mt-8">
-        <div className="w-full md:w-2/3">
+        <div className="w-full md:w-2/3 mx-auto ">
           <h2 className="text-2xl font-bold border-b-2 border-gray-800 pb-2 mb-6">
             Últimos Posts
           </h2>
@@ -52,8 +51,6 @@ export default async function Home() {
             </div>
           )}
         </div>
-
-        <Sidebar posts={posts} />
       </div>
     </>
   );

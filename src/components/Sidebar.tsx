@@ -1,4 +1,4 @@
-import SidebarPostItem from "./SidebarPostItem";
+/*import SidebarPostItem from "./SidebarPostItem";
 import type { Post } from "../types";
 
 type SidebarProps = {
@@ -20,4 +20,4 @@ export default function Sidebar({ posts }: SidebarProps) {
       </div>
     </aside>
   );
-}
+}*/
