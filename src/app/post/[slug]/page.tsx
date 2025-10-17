@@ -7,6 +7,8 @@ import AuthorBio from "../../../components/AuthorBio";
 import Image from "next/image";
 import type { Post } from "../../../types";
 
+export const revalidate = false;
+
 type PageProps = {
   params: {
     slug: string;

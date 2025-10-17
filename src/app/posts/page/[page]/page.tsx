@@ -2,6 +2,8 @@ import { supabase } from "@/lib/supabaseClient";
 import PostListItem from "@/components/PostListItem";
 import Link from "next/link";
 
+export const revalidate = 60;
+
 interface Props {
   params: {
     page: string;
