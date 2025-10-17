@@ -127,8 +127,40 @@ export async function GET() {
       throw new Error(`Erro ao salvar no Supabase: ${error.message}`);
     }
 
+    if (data) {
+      const botToken = process.env.TELEGRAM_BOT_TOKEN;
+      const chatId = process.env.TELEGRAM_CHAT_ID;
+
+      const message = `
+🚀 *Novo Rascunho Gerado!* 🚀
+
+*Título:* ${data[0].title}
+
+👉 [Revisar e publicar](https://radar-dev-drab.vercel.app/admin/drafts)
+      `;
+
+      const telegramUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+      try {
+        await fetch(telegramUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: message,
+            parse_mode: "Markdown",
+            disable_web_page_preview: true,
+          }),
+        });
+      } catch (err) {
+        console.error("Erro ao enviar notificação para o Telegram:", err);
+      }
+    }
+
     return NextResponse.json({
-      message: "Novo rascunho de post criado com sucesso!",
+      message: "Novo rascunho de post criado e notificação enviada!",
       post: data,
     });
   } catch (error: unknown) {
