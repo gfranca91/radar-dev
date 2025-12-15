@@ -51,7 +51,7 @@ export async function GET() {
     const imageUrl = articleToProcess.urlToImage || "";
 
     const genAI = new GoogleGenerativeAI(geminiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `
       Você é um redator para o blog de tecnologia "Radar Dev".
